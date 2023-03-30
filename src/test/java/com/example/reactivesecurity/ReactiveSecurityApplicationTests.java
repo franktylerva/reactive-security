@@ -1,5 +1,6 @@
 package com.example.reactivesecurity;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,8 +39,9 @@ class ReactiveSecurityApplicationTests {
 				.uri("/")
 				.header("USER", "user1")
 				.exchange()
-				.expectStatus().isOk()
-				.expectBody(String.class).isEqualTo("Hello, user1");
+				.expectStatus().is3xxRedirection()
+				.expectHeader().exists("Location")
+				.expectHeader().valueEquals("Location", "/");
 	}
 
 }

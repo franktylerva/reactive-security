@@ -40,13 +40,15 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationWebFilter authenticationWebFilter(ReactiveUserDetailsService userDetailsService,
-                                                           ServerAuthenticationConverter converter) {
+                                                           ServerAuthenticationConverter converter,
+                                                           ServerAuthenticationSuccessHandler authenticationSuccessHandler) {
         // inline the ReactivePreAuthenticatedAuthenticationManager which should only be used for pre authentication
         // This ensures that formLogin uses the MapReactiveUserDetailsService to create a
         // UserDetailsRepositoryReactiveAuthenticationManager
         ReactiveAuthenticationManager authenticationManager = new ReactivePreAuthenticatedAuthenticationManager(userDetailsService);
         AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager);
         filter.setServerAuthenticationConverter(converter);
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         return filter;
     }
 
