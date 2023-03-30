@@ -20,6 +20,7 @@ public class SecurityConfig {
             ServerHttpSecurity http, AuthenticationWebFilter authenticationWebFilter,
             ReactiveUserDetailsService userDetailsService) {
         return http
+                .formLogin().and() // use formLogin DSL which adds another AuthenticationWebFilter properly configured for form login
                 .addFilterBefore(authenticationWebFilter, SecurityWebFiltersOrder.FORM_LOGIN)
                 .authorizeExchange()
                 .anyExchange().authenticated()
@@ -38,12 +39,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ReactiveAuthenticationManager authenticationManager(ReactiveUserDetailsService userDetailsService) {
-       return new ReactivePreAuthenticatedAuthenticationManager(userDetailsService);
-    }
-    @Bean
-    public AuthenticationWebFilter authenticationWebFilter(ReactiveAuthenticationManager authenticationManager,
+    public AuthenticationWebFilter authenticationWebFilter(ReactiveUserDetailsService userDetailsService,
                                                            ServerAuthenticationConverter converter) {
+        // inline the ReactivePreAuthenticatedAuthenticationManager which should only be used for pre authentication
+        // This ensures that formLogin uses the MapReactiveUserDetailsService to create a
+        // UserDetailsRepositoryReactiveAuthenticationManager
+        ReactiveAuthenticationManager authenticationManager = new ReactivePreAuthenticatedAuthenticationManager(userDetailsService);
         AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager);
         filter.setServerAuthenticationConverter(converter);
         return filter;
@@ -51,8 +52,7 @@ public class SecurityConfig {
 
     @Bean
     public ServerAuthenticationConverter converters() {
-        return new DelegatingServerAuthenticationConverter(new ReactiveHttpHeaderConverter(),
-                new ServerFormLoginAuthenticationConverter());
+        return new ReactiveHttpHeaderConverter();
     }
 
 }
