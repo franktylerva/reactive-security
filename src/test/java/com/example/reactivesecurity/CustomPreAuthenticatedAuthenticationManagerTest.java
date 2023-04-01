@@ -14,15 +14,8 @@ class CustomPreAuthenticatedAuthenticationManagerTest {
 
     @BeforeEach
     void beforeEach() {
-
-        var user = User
-                .withUsername("user1")
-                .password("{noop}password")
-                .roles("USER")
-                .build();
-
         authenticationManager = new CustomPreAuthenticatedAuthenticationManager(
-                new MapReactiveUserDetailsService(user));
+                new CustomUserDetailsService());
     }
     @Test
     void shouldReturnCustomAuthenticationToken() {

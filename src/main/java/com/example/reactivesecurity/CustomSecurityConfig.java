@@ -31,7 +31,7 @@ public class CustomSecurityConfig {
     @Bean
     public MapReactiveUserDetailsService userDetailsService() {
         UserDetails user = User
-                .withUsername("user1")
+                .withUsername("user2")
                 .password("{noop}password")
                 .roles("USER")
                 .build();
@@ -39,21 +39,16 @@ public class CustomSecurityConfig {
     }
 
     @Bean
-    public AuthenticationWebFilter authenticationWebFilter(ReactiveUserDetailsService userDetailsService,
-                                                           ServerAuthenticationConverter converter) {
-        // inline the ReactivePreAuthenticatedAuthenticationManager which should only be used for pre authentication
-        // This ensures that formLogin uses the MapReactiveUserDetailsService to create a
-        // UserDetailsRepositoryReactiveAuthenticationManager
-        ReactiveAuthenticationManager authenticationManager = new ReactivePreAuthenticatedAuthenticationManager(userDetailsService);
-        AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager);
-        filter.setServerAuthenticationConverter(converter);
-        //filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-        return filter;
-    }
+    public AuthenticationWebFilter authenticationWebFilter() {
 
-    @Bean
-    public ServerAuthenticationConverter converters() {
-        return new CustomServerAuthenticationConverter("USER");
+        var userDetailsService = new CustomUserDetailsService();
+        var authenticationManager = new CustomPreAuthenticatedAuthenticationManager(userDetailsService);
+        var filter = new AuthenticationWebFilter(authenticationManager);
+        var converter = new CustomServerAuthenticationConverter("USER");
+        filter.setServerAuthenticationConverter(converter);
+//        var authenticationSuccessHandler = new CustomServerAuthenticationSuccessHandler();
+//        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        return filter;
     }
 
 }
