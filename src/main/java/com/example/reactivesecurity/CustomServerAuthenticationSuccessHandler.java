@@ -8,26 +8,18 @@ import org.springframework.security.web.server.authentication.RedirectServerAuth
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import reactor.core.publisher.Mono;
 
-//@Component
 public class CustomServerAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
-
-    private final AuditLogger auditLogger;
 
     private RedirectServerAuthenticationSuccessHandler defaultHandler =
             new RedirectServerAuthenticationSuccessHandler("/");
 
     private ServerRedirectStrategy redirectStrategy = new DefaultServerRedirectStrategy();
 
-    public CustomServerAuthenticationSuccessHandler(AuditLogger auditLogger) {
-        this.auditLogger = auditLogger;
-    }
-
     @Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
 
         var request = webFilterExchange.getExchange().getRequest();
         var response = webFilterExchange.getExchange().getResponse();
-        auditLogger.logRequest(request, response, authentication);
 
         return defaultHandler.onAuthenticationSuccess(webFilterExchange, authentication);
     }
