@@ -20,4 +20,14 @@ public class ReactiveSecurityApplication {
 		return Mono.just("Hello, " + authentication.getName());
 	}
 
+	@GetMapping("/a")
+	public Mono<String> endpointA(Authentication authentication) {
+		return Mono.just("(A) Hello, " + authentication.getName());
+	}
+
+	@GetMapping("/b")
+	public Mono<String> endpointB(Authentication authentication) {
+		return Mono.just("(B) Hello, " + authentication.getName());
+	}
+
 }

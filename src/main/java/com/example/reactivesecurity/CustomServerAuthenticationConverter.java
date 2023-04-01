@@ -6,15 +6,22 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-public class ReactiveHttpHeaderConverter implements ServerAuthenticationConverter {
+public class CustomServerAuthenticationConverter implements ServerAuthenticationConverter {
+
+    private final String HEADER_NAME;
+
+    public CustomServerAuthenticationConverter(String HEADER_NAME) {
+        this.HEADER_NAME = HEADER_NAME;
+    }
 
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
 
-        var headers = exchange.getRequest().getHeaders().get("USER");
+        var headers = exchange.getRequest().getHeaders().get(HEADER_NAME);
         if(headers != null) {
-            var userName = exchange.getRequest().getHeaders().get("USER").get(0);
-            return Mono.just(new PreAuthenticatedAuthenticationToken(userName, null));
+            var userName = exchange.getRequest().getHeaders().get(HEADER_NAME).get(0);
+            if(!userName.trim().isBlank())
+                return Mono.just(new PreAuthenticatedAuthenticationToken(userName, null));
         }
         return Mono.empty();
     }

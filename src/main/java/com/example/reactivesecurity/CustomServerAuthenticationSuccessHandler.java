@@ -6,11 +6,10 @@ import org.springframework.security.web.server.ServerRedirectStrategy;
 import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-@Component
-public class AuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
+//@Component
+public class CustomServerAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
 
     private final AuditLogger auditLogger;
 
@@ -19,7 +18,7 @@ public class AuthenticationSuccessHandler implements ServerAuthenticationSuccess
 
     private ServerRedirectStrategy redirectStrategy = new DefaultServerRedirectStrategy();
 
-    public AuthenticationSuccessHandler(AuditLogger auditLogger) {
+    public CustomServerAuthenticationSuccessHandler(AuditLogger auditLogger) {
         this.auditLogger = auditLogger;
     }
 

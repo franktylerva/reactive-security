@@ -6,12 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.WebTestClientConfigurer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ReactiveSecurityApplicationTests {
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@BeforeEach
+	void beforeEach() {
+
+	}
 
 	@Test
 	@WithMockUser("testuser")
@@ -36,7 +42,7 @@ class ReactiveSecurityApplicationTests {
 	void shouldPreAuthenticate() {
 
 		webTestClient.get()
-				.uri("/")
+				.uri("/a")
 				.header("USER", "user1")
 				.exchange()
 				.expectStatus().is3xxRedirection()

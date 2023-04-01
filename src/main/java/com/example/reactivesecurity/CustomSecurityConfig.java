@@ -13,7 +13,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.*;
 
 @EnableWebFluxSecurity
-public class SecurityConfig {
+public class CustomSecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(
@@ -40,21 +40,20 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationWebFilter authenticationWebFilter(ReactiveUserDetailsService userDetailsService,
-                                                           ServerAuthenticationConverter converter,
-                                                           ServerAuthenticationSuccessHandler authenticationSuccessHandler) {
+                                                           ServerAuthenticationConverter converter) {
         // inline the ReactivePreAuthenticatedAuthenticationManager which should only be used for pre authentication
         // This ensures that formLogin uses the MapReactiveUserDetailsService to create a
         // UserDetailsRepositoryReactiveAuthenticationManager
         ReactiveAuthenticationManager authenticationManager = new ReactivePreAuthenticatedAuthenticationManager(userDetailsService);
         AuthenticationWebFilter filter = new AuthenticationWebFilter(authenticationManager);
         filter.setServerAuthenticationConverter(converter);
-        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        //filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
         return filter;
     }
 
     @Bean
     public ServerAuthenticationConverter converters() {
-        return new ReactiveHttpHeaderConverter();
+        return new CustomServerAuthenticationConverter("USER");
     }
 
 }
