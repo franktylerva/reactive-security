@@ -1,0 +1,11 @@
+logging:
+  level:
+    com:
+      example:
+        reactivesecurity: DEBUG
+    org:
+      springframework:
+        security:
+          web:
+            server:
+              context: DEBUG

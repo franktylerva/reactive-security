@@ -45,9 +45,8 @@ class ReactiveSecurityApplicationTests {
 				.uri("/a")
 				.header("USER", "user1")
 				.exchange()
-				.expectStatus().is3xxRedirection()
-				.expectHeader().exists("Location")
-				.expectHeader().valueEquals("Location", "/");
+				.expectStatus().isOk()
+				.expectBody(String.class).isEqualTo("(A) Hello, user1");
 	}
 
 }
