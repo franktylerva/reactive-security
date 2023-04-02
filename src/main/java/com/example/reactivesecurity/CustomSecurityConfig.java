@@ -7,6 +7,9 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.*;
+import org.springframework.security.web.server.context.ReactorContextWebFilter;
+import org.springframework.security.web.server.context.ServerSecurityContextRepository;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 
 @EnableWebFluxSecurity
 public class CustomSecurityConfig {
@@ -30,11 +33,20 @@ public class CustomSecurityConfig {
     @Bean
     public AuthenticationWebFilter authenticationWebFilter() {
 
-        var authenticationManager = new ReactivePreAuthenticatedAuthenticationManager(userDetailsService());
-        var filter = new AuthenticationWebFilter(authenticationManager);
-        var converter = new CustomServerAuthenticationConverter("USER");
-        filter.setServerAuthenticationConverter(converter);
-        return filter;
+        var authenticationFilter = new AuthenticationWebFilter(
+                new ReactivePreAuthenticatedAuthenticationManager(userDetailsService()));
+
+        authenticationFilter.setServerAuthenticationConverter(
+                new CustomServerAuthenticationConverter("USER"));
+
+        authenticationFilter.setSecurityContextRepository(securityContextRepository());
+
+        return authenticationFilter;
+    }
+
+    @Bean
+    ServerSecurityContextRepository securityContextRepository() {
+        return new WebSessionServerSecurityContextRepository();
     }
 
 }
