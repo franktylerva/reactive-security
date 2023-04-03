@@ -25,12 +25,10 @@ public class CustomSecurityConfig {
                 .build();
     }
 
-    @Bean
     public ReactiveUserDetailsService userDetailsService() {
         return new CustomUserDetailsService();
     }
 
-    @Bean
     public AuthenticationWebFilter authenticationWebFilter() {
 
         var authenticationFilter = new AuthenticationWebFilter(
@@ -44,7 +42,6 @@ public class CustomSecurityConfig {
         return authenticationFilter;
     }
 
-    @Bean
     ServerSecurityContextRepository securityContextRepository() {
         return new WebSessionServerSecurityContextRepository();
     }
