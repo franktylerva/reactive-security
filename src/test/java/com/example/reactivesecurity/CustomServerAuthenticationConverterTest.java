@@ -4,14 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
+import org.springframework.mock.web.server.MockWebSession;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository.DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME;
 
 class CustomServerAuthenticationConverterTest {
 
@@ -25,16 +23,24 @@ class CustomServerAuthenticationConverterTest {
     }
 
     @Test
-    public void test() {
+    public void shouldReturnNullAuthenticationObjectWhenASessionExists() {
 
+        String userName = "USER1";
 
-        var data = Flux.just("Frank", "Denise", "Ethan", "Justin", "Colin");
+        MockServerHttpRequest request = MockServerHttpRequest.get("/")
+                .header(headerName, userName)
+                .build();
 
-        data.subscribe(System.out::println);
-        
+        MockWebSession session = new MockWebSession();
+        session.getAttributes().put(DEFAULT_SPRING_SECURITY_CONTEXT_ATTR_NAME, "Test Value");
+
+        ServerWebExchange serverWebExchange = MockServerWebExchange.builder(request)
+                .session(session)
+                .build();
+
+        var authentication = converter.convert(serverWebExchange).block();
+        assertThat(authentication).isNull();
     }
-
-
 
     @Test
     public void shouldReturnPreAuthenticatedAuthenticationToken() {

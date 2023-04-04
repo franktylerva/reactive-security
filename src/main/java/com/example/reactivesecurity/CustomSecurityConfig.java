@@ -16,7 +16,7 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
-                .formLogin().disable() // use formLogin DSL which adds another AuthenticationWebFilter properly configured for form login
+                .formLogin().and()
                 .addFilterBefore(authenticationWebFilter(), SecurityWebFiltersOrder.FORM_LOGIN)
                 .authorizeExchange()
                 .anyExchange().authenticated()
