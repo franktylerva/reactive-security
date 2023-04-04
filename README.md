@@ -12,5 +12,6 @@ sequenceDiagram
     activate ReactiveUserDetailsService
     ReactiveUserDetailsService->>ReactiveAuthenticationManager: userDetail
     activate ReactiveAuthenticationManager
-    ReactiveAuthenticationManager->>AuthenticationWebFilter: authentication
+    ReactiveAuthenticationManager->>AuthenticationSuccessHandler: (exchange, authentication)
+    ReactiveAuthenticationManager->>AuthenticationWebFilter: redirect
 ```
