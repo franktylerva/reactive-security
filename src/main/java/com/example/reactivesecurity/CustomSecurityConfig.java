@@ -14,10 +14,11 @@ import org.springframework.security.web.server.context.WebSessionServerSecurityC
 public class CustomSecurityConfig {
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
+                                                         AuthenticationWebFilter authenticationWebFilter) {
         return http
                 .formLogin().and()
-                .addFilterBefore(authenticationWebFilter(), SecurityWebFiltersOrder.FORM_LOGIN)
+                .addFilterBefore(authenticationWebFilter, SecurityWebFiltersOrder.FORM_LOGIN)
                 .authorizeExchange()
                 .anyExchange().authenticated()
                 .and()
@@ -30,19 +31,21 @@ public class CustomSecurityConfig {
         return new CustomUserDetailsService();
     }
 
-    public AuthenticationWebFilter authenticationWebFilter() {
+    @Bean
+    public AuthenticationWebFilter authenticationWebFilter(ServerSecurityContextRepository securityContextRepository,
+                                                           ReactiveUserDetailsService userDetailsService) {
 
         var authenticationFilter = new AuthenticationWebFilter(
-                new ReactivePreAuthenticatedAuthenticationManager(userDetailsService()));
+                new ReactivePreAuthenticatedAuthenticationManager(userDetailsService));
 
         authenticationFilter.setServerAuthenticationConverter(
                 new CustomServerAuthenticationConverter("USER"));
 
-        authenticationFilter.setSecurityContextRepository(securityContextRepository());
+        authenticationFilter.setSecurityContextRepository(securityContextRepository);
 
         return authenticationFilter;
     }
-
+    @Bean
     ServerSecurityContextRepository securityContextRepository() {
 
         var securityContextRepository = new WebSessionServerSecurityContextRepository();

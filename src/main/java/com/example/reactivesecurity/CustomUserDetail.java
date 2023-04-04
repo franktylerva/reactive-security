@@ -16,6 +16,8 @@ public class CustomUserDetail implements UserDetails {
 
     private String password;
 
+    private boolean newUser;
+
     private Collection<GrantedAuthority> authorities = new ArrayList<>();
 
     public void setUserName(String userName) {
@@ -32,6 +34,14 @@ public class CustomUserDetail implements UserDetails {
 
     public void setAuthorities(Collection<GrantedAuthority> authorities) {
         this.authorities = authorities;
+    }
+
+    public boolean isNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(boolean newUser) {
+        this.newUser = newUser;
     }
 
     public void setPassword(String password) {
