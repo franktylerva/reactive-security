@@ -14,6 +14,8 @@ public class CustomUserDetail implements UserDetails {
 
     private String lastName;
 
+    private String password;
+
     private Collection<GrantedAuthority> authorities = new ArrayList<>();
 
     public void setUserName(String userName) {
@@ -32,6 +34,10 @@ public class CustomUserDetail implements UserDetails {
         this.authorities = authorities;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -39,7 +45,7 @@ public class CustomUserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override

@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements ReactiveUserDetailsService {
 
         var user = new CustomUserDetail();
         user.setUserName("user1");
+        user.setPassword("{noop}password");
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setAuthorities(List.of(new SimpleGrantedAuthority("USER")));

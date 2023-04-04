@@ -7,7 +7,6 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.*;
-import org.springframework.security.web.server.context.ReactorContextWebFilter;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 
@@ -17,14 +16,16 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
-                .formLogin().and() // use formLogin DSL which adds another AuthenticationWebFilter properly configured for form login
-                .addFilterAt(authenticationWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+                .formLogin().disable() // use formLogin DSL which adds another AuthenticationWebFilter properly configured for form login
+                .addFilterBefore(authenticationWebFilter(), SecurityWebFiltersOrder.FORM_LOGIN)
                 .authorizeExchange()
                 .anyExchange().authenticated()
                 .and()
+                .securityContextRepository(securityContextRepository())
                 .build();
     }
 
+    @Bean
     public ReactiveUserDetailsService userDetailsService() {
         return new CustomUserDetailsService();
     }
@@ -43,7 +44,10 @@ public class CustomSecurityConfig {
     }
 
     ServerSecurityContextRepository securityContextRepository() {
-        return new WebSessionServerSecurityContextRepository();
+
+        var securityContextRepository = new WebSessionServerSecurityContextRepository();
+        securityContextRepository.setCacheSecurityContext(true);
+        return securityContextRepository;
     }
 
 }

@@ -6,6 +6,10 @@ import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -19,6 +23,18 @@ class CustomServerAuthenticationConverterTest {
     void beforeEach() {
         converter = new CustomServerAuthenticationConverter(headerName);
     }
+
+    @Test
+    public void test() {
+
+
+        var data = Flux.just("Frank", "Denise", "Ethan", "Justin", "Colin");
+
+        data.subscribe(System.out::println);
+        
+    }
+
+
 
     @Test
     public void shouldReturnPreAuthenticatedAuthenticationToken() {
